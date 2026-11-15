@@ -1,5 +1,9 @@
 # Games Deals Crawler
 
+
+- **php** [http://localhost:8081/](http://localhost:8081/)
+- **php-myadmin** [http://localhost:8082/](http://localhost:8081/)
+
 Projeto Python para coletar jogos gratuitos ativos da Epic Games Store e jogos em promoção na Steam (loja Brasil), persistindo os dados em MySQL.
 
 ## Funcionalidades
@@ -84,9 +88,11 @@ docker compose up -d --build
 # Executar todos os crawlers uma única vez
 docker compose run --rm crawler python -m app.main --once
 
+# Teste rápido do insert (não espera todos os 100)
+docker compose run --rm crawler python -c "from app.services.steam_deals_service import run_steam_crawler; print(run_steam_crawler(max_items=10))"
+
 # Executar somente a Steam com logs detalhados (DEBUG)
-docker compose run --rm crawler \
-    python -m app.main --crawler steam --once --log-level DEBUG
+docker compose run --rm crawler python -m app.main --crawler steam --once --log-level DEBUG
 
 # Parar e remover os containers
 docker compose down

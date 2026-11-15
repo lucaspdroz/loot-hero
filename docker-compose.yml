@@ -1,4 +1,3 @@
-
 services:
   mysql:
     image: mysql:8.4
@@ -52,6 +51,27 @@ services:
       mysql:
         condition: service_healthy
     networks: [backend]
+
+  web:
+      image: php:8.3-apache
+      container_name: games-deals-php
+      restart: unless-stopped
+      ports:
+        - "8081:80"
+      volumes:
+        - ./project:/var/www/html
+      command: >
+        bash -c "docker-php-ext-install pdo pdo_mysql mysqli && apache2-foreground"
+      environment:
+        MYSQL_HOST: mysql
+        MYSQL_DATABASE: ${MYSQL_DATABASE:-games_deals}
+        MYSQL_USER: ${MYSQL_USER:-games_crawler}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Defina MYSQL_PASSWORD no .env}
+      depends_on:
+        mysql:
+          condition: service_healthy
+      networks:
+        - backend
 
 volumes:
   mysql_data:
